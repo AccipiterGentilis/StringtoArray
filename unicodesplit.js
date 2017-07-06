@@ -30,3 +30,49 @@ String.prototype.unicodesplit = function() {
     }
     return _stringarr;
 };
+
+String.prototype.toArray = function(system, prefix) {
+    if (!system) {
+        return this.unicodesplit();
+    } else {
+        var _decarr = new Array(),
+            _codearr = new Array(),
+            _retarr = new Array();
+        for (var i = 0; i < this.length; i++) {
+            var _code = this.charCodeAt(i),
+                _point = this.codePointAt(i);
+            if (_point > _code) {
+                _decarr.push(_point);
+                i++;
+            } else {
+                _decarr.push(_code);
+            }
+            _codearr.push(_code);
+        }
+
+        switch (system.toString().toUpperCase()) {
+            case 'UTF-16':
+                _retarr = _codearr.map(function(val) {
+                    var _pre = prefix === true ? '\\' + 'u' : '';
+                    return _pre + val.toString(16);
+                });
+                break;
+            case 'UTF-32':
+                _retarr = _decarr.map(function(val) {
+                    var _pre = prefix === true ? 'U+' : '';
+                    return _pre + val.toString(16);
+                });
+                break;
+            default:
+                if (Number(system)) {
+                    _retarr = _decarr.map(function(val) {
+                        return val.toString(Number(system));
+                    });
+                } else {
+                    _retarr = this.unicodesplit();
+                }
+                break;
+        }
+        return _retarr;
+    }
+};
