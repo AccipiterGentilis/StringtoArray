@@ -1,2 +1,2 @@
-# unicodesplit
+# StringtoArray
 split string by unicode
